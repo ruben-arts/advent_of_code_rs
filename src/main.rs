@@ -1,51 +1,34 @@
-use std::fs;
-
 fn main() {
-    println!("Welcome to the first day of Advent of Code 2019!");
-    let input = read_input_file("./resources/input_puzzel_1.txt");
-    // println!("Input is : \n{}", input);
-    let array = input_to_array(&input);
-    let needed_fuel = calc_total_fuel(array);
-    println!(
-        "The needed fuel for all the elf's spacecrafts = {}",
-        needed_fuel
-    )
-}
+    let mut input= vec![
+        1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 13, 1, 19, 1, 6, 19, 23, 2, 23, 6, 27,
+        1, 5, 27, 31, 1, 10, 31, 35, 2, 6, 35, 39, 1, 39, 13, 43, 1, 43, 9, 47, 2, 47, 10, 51, 1,
+        5, 51, 55, 1, 55, 10, 59, 2, 59, 6, 63, 2, 6, 63, 67, 1, 5, 67, 71, 2, 9, 71, 75, 1, 75, 6,
+        79, 1, 6, 79, 83, 2, 83, 9, 87, 2, 87, 13, 91, 1, 10, 91, 95, 1, 95, 13, 99, 2, 13, 99,
+        103, 1, 103, 10, 107, 2, 107, 10, 111, 1, 111, 9, 115, 1, 115, 2, 119, 1, 9, 119, 0, 99, 2,
+        0, 14, 0,
+    ];
 
-fn read_input_file(path: &str) -> String {
-    let error = format!("Could not read file from path: {}", path);
-    let content = fs::read_to_string(path).expect(error.as_ref());
-    return content;
-}
+    // let mut input = [1,1,1,4,99,5,6,0,99];
+    // let init_input = input.clone();
+    let mut index = 0;
+    let mut opcode = input[index];
+    while opcode != 99 && index+3<=input.len(){
+        if opcode == 1 {
+            let output = input[input[index+1]] + input[input[index+2]];
+            let o_i = input[index+3];
+            input[o_i] = output;
 
-fn input_to_array(input: &str) -> Vec<i32> {
-    let mut list: Vec<i32> = Vec::new();
-    for line in input.split("\n") {
-        if let Ok(value) = line.parse() {
-            list.push(value)
+        } else if opcode == 2 {
+            let output = input[input[index+1]] * input[input[index+2]];
+            let o_i = input[index+3];
+            input[o_i] = output;
+        } else {
+            panic!("unknown opcode")
         }
+        index += 4;
+        opcode = input[index];
     }
-    list
-}
-
-fn calc_fuel_for_fuel(mass: i32) -> i32 {
-    // Calculate the amount of fuel needed for a spacecraft,
-    // with the weight of the fuel itself in mind.
-    let mut fuel = (mass / 3) - 2;
-    let mut fuel_for_last_fuel: i32 = fuel;
-    while fuel_for_last_fuel > 0 {
-        fuel_for_last_fuel = (fuel_for_last_fuel / 3) - 2;
-        if fuel_for_last_fuel > 0 {
-            fuel += fuel_for_last_fuel;
-        }
-    }
-    fuel
-}
-
-fn calc_total_fuel(list_of_mass: Vec<i32>) -> i32 {
-    let mut fuel_sum: i32 = 0;
-    for mass in list_of_mass {
-        fuel_sum += calc_fuel_for_fuel(mass);
-    }
-    fuel_sum
+    println!("The value at position '0' = {}", input[0]);
+    // println!("The old input list = {:?}", init_input);
+    println!("The new input list = {:?}", input);
 }
